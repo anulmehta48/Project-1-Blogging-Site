@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Dependency directory
+dependencies/
+
+# Environment variables
+.env
+
+# Build files
+/build
+
+# IDE-specific files
+.idea/
+.vscode/

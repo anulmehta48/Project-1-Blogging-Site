@@ -1,0 +1,29 @@
+{
+  "name": "project-1-blogging-site",
+  "version": "1.0.0",
+  "description": "A powerful Node.js backend for a modern and feature-rich blogging site. This project leverages Node.js to handle server-side logic, express for routing, and integrates seamlessly with databases for efficient content storage. It includes authentication, API endpoints for managing blog posts, comments, and user profiles. Build your robust and scalable blogging platform with this starter template.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "npx nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anulmehta48/Project-1-Blogging-Site.git"
+  },
+  "author": "Anul Mehta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anulmehta48/Project-1-Blogging-Site/issues"
+  },
+  "homepage": "https://github.com/anulmehta48/Project-1-Blogging-Site#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
