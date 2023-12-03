@@ -1,4 +1,4 @@
-# project-1-BloggingSite
+# project-1-Blogging-Site
 
 Repository for backend cohort - Plutonium
 

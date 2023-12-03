@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const router = require("./router/route");
 require("dotenv").config();
+app.use(express.json());
 
 const DB_USER = process.env.DB_USER;
 mongoose
@@ -13,11 +15,10 @@ mongoose
     console.log(err);
   });
 
-app.use("/", function (req, res) {
-  res.send({ Name: "Hello" });
-});
+app.use("/", router);
 
 app.listen(process.env.PORT || 3000, function () {
   console.log("Express is running on port " + (process.env.PORT || 3000));
 });
+
 
