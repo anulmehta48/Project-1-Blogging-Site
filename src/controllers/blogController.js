@@ -19,8 +19,10 @@ const createBlog=async function(req,res){
       return res.status(400).send({ status: false, msg: "category is require"});
 
     const existAuthor=await authorModel.findOne({_id:authorId})
-    if(!existAuthor){
-        return res.status(400).send({status:false,msg:"Please provide register author"})
+    // console.log(existAuthor);
+    // console.log(req.loggedInUser);
+    if(existAuthor._id.toString() !== req.loggedInUser ){
+        return res.status(401).send({status:false,msg:"Permission is denied for this user"})
     }else{
         if (isPublished === true) {
             blog["publishedAt"] = new Date();
@@ -33,6 +35,7 @@ const createBlog=async function(req,res){
     
    }
 }
+
 
 const getBlogs=async function(req,res){
     try {
@@ -75,7 +78,9 @@ const updateBlog=async function(req,res){
     console.log(data);
     const date = Date.now().toString();
     const alert = await blogModel.findOne({ _id: inputId, isDeleted: true });
-    if (alert) return res.status(404).send({ msg: "Blog is already deleted" });
+    if (alert) {
+      return res.status(404).send({status:false, msg: "this blog is already deleted" });
+    }
 
     const blogs = await blogModel.findOneAndUpdate(
       { _id: inputId },
@@ -90,17 +95,74 @@ const updateBlog=async function(req,res){
       },
       { new: true }
     );
+    if (!blogs){
+      return res.status(404).send({status:false, msg: "This blog dose not exist" });
 
-    if (!blogs) return res.status(404).send({ msg: "no blog found" });
-    res.status(200).send({ msg: blogs });
+    }
+    res.status(200).send({status:true, data: blogs });
    } catch (error) {
     res.status(500).send({status:false,msg:error.message})
    }
 }
 
+const deleteBlog=async function(req,res){
+  try {
+    const inputId=req.params.blogId
+    const valid=mongoose.Types.ObjectId.isValid(inputId)
+    if (!valid) return res.status(400).send({ msg: "enter valid objectID" });
+    const date=Date.now().toString();
+    const alert=await blogModel.findOne({_id:inputId,isDeleted:true})
+    if(alert){
+      return res.status(404).send({status:false,msg:"This blog is already deleted"})
+    }
+    const updateData=await blogModel.findOneAndUpdate(
+      {_id:inputId},
+      {$set:{isDeleted:true,deletedAt:date}},
+      {new:true}
+      )
+    if (!updateData){
+      return res.status(404).send({status:false, msg: "This document does not exist" });
+
+    }
+    res.status(200).send({status:true,data:updateData})
+  } catch (error) {
+    res.status(500).send({status:false,msg:error.message})
+  }
+}
+
+const deleteByQuery=async function(req,res){
+  try{
+    const { category, authorId, tags, subcategory, isPublished } = req.query;
+    const deleteData = await blogModel.updateMany(
+      {
+        isDeleted: false,
+        $or: [
+          { authorId: authorId },
+          { isPublished: isPublished },
+          { tags: tags },
+          { category: category },
+          { subcategory: subcategory },
+        ],
+      },
+      { $set: { isDeleted: true }, deletedAt: Date.now() },
+      { new: true }
+    );
+    if (deleteData.modifiedCount == 0) {
+      return res.status(404).send({ status: false, msg: "All documents are already deleted" });
+    }
+    return res.status(200).send({status: true,data: deleteData,msg: "Now, following blogs are deleted"});
+  }catch(error){
+    res.status(500).send({status:false,msg:error.message})
+  }
+}
+
+
+
 module.exports.createBlog=createBlog;
 module.exports.getBlogs=getBlogs;
 module.exports.updateBlog=updateBlog;
+module.exports.deleteBlog=deleteBlog;
+module.exports.deleteByQuery=deleteByQuery;
 
 
 

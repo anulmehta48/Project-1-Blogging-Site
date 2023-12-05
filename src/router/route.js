@@ -1,6 +1,7 @@
 const express = require("express");
 const { createAuthor, authorLogin, getAllAuthor } = require("../controllers/authorController");
-const { createBlog, getBlogs, updateBlog } = require("../controllers/blogController");
+const { createBlog, getBlogs, updateBlog, deleteBlog, deleteByQuery } = require("../controllers/blogController");
+const { authenticate } = require("../middleware/auth");
 const router = express.Router();
 
 router.get("/test-me", (req, res) => {
@@ -10,9 +11,11 @@ router.get("/test-me", (req, res) => {
 router.post('/authors',createAuthor)
 router.post('/login',authorLogin)
 router.get("/getauthors",getAllAuthor)
-router.post("/blogs",createBlog)
+router.post("/blogs",authenticate,createBlog)
 router.get("/blogs",getBlogs)
 router.put("/blogs/:blogId",updateBlog)
+router.delete("/blogs/:blogId",deleteBlog)
+router.delete("/blogs",deleteByQuery)
 
 router.all("/*", function (req, res) {
   res.status(400).send({status: false, message: "Make Sure Your Endpoint is Correct !!!"})
