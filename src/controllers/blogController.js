@@ -150,7 +150,7 @@ const deleteByQuery=async function(req,res){
     if (deleteData.modifiedCount == 0) {
       return res.status(404).send({ status: false, msg: "All documents are already deleted" });
     }
-    return res.status(200).send({status: true,data: deleteData,msg: "Now, following blogs are deleted"});
+    return res.status(200).send({status: true,msg: "Now, following blogs are deleted",data: deleteData});
   }catch(error){
     res.status(500).send({status:false,msg:error.message})
   }
